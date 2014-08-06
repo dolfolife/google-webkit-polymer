@@ -26,6 +26,10 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
 var pagespeed = require('psi');
+var bower = require('gulp-bower');
+var vulcanize = require('gulp-vulcanize');
+var taskListing = require('gulp-task-listing');
+
 var reload = browserSync.reload;
 
 var AUTOPREFIXER_BROWSERS = [
@@ -39,6 +43,10 @@ var AUTOPREFIXER_BROWSERS = [
   'android >= 4.4',
   'bb >= 10'
 ];
+
+//gulp help
+gulp.task('help', taskListing);
+
 
 // Lint JavaScript
 gulp.task('jshint', function () {
@@ -153,6 +161,7 @@ gulp.task('serve', ['styles'], function () {
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/styles/**/*.{scss,css}'], ['styles', reload]);
   gulp.watch(['app/scripts/**/*.js'], ['jshint']);
+  gulp.watch(['bower.json'], ['bower']);
   gulp.watch(['app/images/**/*'], reload);
 });
 
@@ -173,7 +182,7 @@ gulp.task('serve:dist', ['default'], function () {
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['jshint', 'html', 'images', 'fonts', 'copy'], cb);
+  runSequence('styles', ['jshint', 'html', 'images', 'fonts', 'copy', 'bower', 'vulcanize'], cb);
 });
 
 // Run PageSpeed Insights
@@ -186,6 +195,20 @@ gulp.task('pagespeed', pagespeed.bind(null, {
   url: 'https://example.com',
   strategy: 'mobile'
 }));
+
+// Bower Task
+gulp.task('bower', function() {
+  return bower()
+  .pipe(gulp.dest('app/vendor/lib/'))
+  .pipe(gulp.dest('dist/vendor/lib/'))
+  .pipe(gulp.dest('.tmp/vendor/lib/'))
+});
+
+gulp.task('vulcanize', function () {
+  return gulp.src('dist/index.html')
+  .pipe(vulcanize({dest: 'dist'}))
+  .pipe(gulp.dest('dist'));
+});
 
 // Load custom tasks from the `tasks` directory
 try { require('require-dir')('tasks'); } catch (err) {}
