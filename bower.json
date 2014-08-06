@@ -1,0 +1,24 @@
+{
+  "name": "web-starter-kit",
+  "version": "0.4.0",
+  "homepage": "https://github.com/google/web-starter-kit",
+  "authors": [
+    "Rodolfo Sanchez <rodolfo2488@gmail.com>"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/vendor/lib",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "polymer": "Polymer/polymer#~0.3.4",
+    "core-scaffold": "Polymer/core-scaffold"
+  }
+}
